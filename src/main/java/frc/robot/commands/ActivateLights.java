@@ -1,39 +1,33 @@
 package frc.robot.commands;
 
-import edu.wpi.first.wpilibj2.command.CommandBase;
-import frc.robot.subsystems.Cannon;
+import edu.wpi.first.wpilibj2.command.InstantCommand;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.LEDLights;
+import frc.robot.subsystems.LEDLights.LEDColor;
 
-public class ActivateLights extends CommandBase {
+public class ActivateLights extends InstantCommand {
 
-  private final Cannon m_cannon;
+  private final LEDLights m_lights;
+  private final LEDColor m_color;
 
-  public ActivateLights(Cannon subsystem) {
-    m_cannon = subsystem;
-    addRequirements(m_cannon);
+  public ActivateLights(RobotContainer container, LEDColor color) {
+    m_lights = container.m_lights;
+    m_color = color;
   }
 
   // Called when the command is initially scheduled.
   @Override
   public void initialize() {
-    m_cannon.lightsOn();
+    System.out.println("ActivateLights");
   }
 
   // Called every time the scheduler runs while the command is scheduled.
   @Override
-  public void execute() {}
+  public void execute() {
+    m_lights.setOnboardLights(m_color);
+  }
 
   // Called once the command ends or is interrupted.
   @Override
   public void end(boolean interrupted) {}
-
-  // Returns true when the command should end.
-  @Override
-  public boolean isFinished() {
-    return false;
-  }
-
-  @Override
-  public boolean runsWhenDisabled() {
-    return false;
-  }
 }

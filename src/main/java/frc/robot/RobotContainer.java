@@ -1,5 +1,6 @@
 package frc.robot;
 
+import edu.wpi.first.wpilibj.RobotBase;
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
@@ -7,6 +8,7 @@ import edu.wpi.first.wpilibj2.command.Command;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
+import frc.robot.subsystems.LEDLights.LEDColor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -21,6 +23,7 @@ public class RobotContainer {
   // The robot's subsystems
   public final Cannon m_cannon = new Cannon();
   public final DriveTrain m_driveTrain = new DriveTrain();
+  public final LEDLights m_lights = new LEDLights(RobotBase.isSimulation());
 
   // Joysticks
   private final XboxController xboxController = new XboxController(0);
@@ -56,25 +59,25 @@ public class RobotContainer {
 
     // SmartDashboard Buttons
     SmartDashboard.putData("Autonomous Command", new AutonomousCommand());
-    SmartDashboard.putData("ArmCannon", new ArmCannon(m_cannon));
-    SmartDashboard.putData("DisarmCannon", new DisarmCannon(m_cannon));
-    SmartDashboard.putData("ShootCannon", new ShootCannon(m_cannon));
-    SmartDashboard.putData("DriveCommand", new DriveCommand(m_driveTrain));
-    SmartDashboard.putData("ToggleDriveScaling", new ToggleDriveScaling(m_driveTrain));
-    SmartDashboard.putData("IncrementDriveScaling", new IncrementDriveScaling(m_driveTrain));
-    SmartDashboard.putData("DecrementDriveScaling", new DecrementDriveScaling(m_driveTrain));
-    SmartDashboard.putData("RotateMagazine", new RotateMagazine(m_cannon));
-    SmartDashboard.putData("ControlCannon", new ControlCannon(m_cannon));
-    SmartDashboard.putData("ActivateLights", new ActivateLights(m_cannon));
-    SmartDashboard.putData("LightsArmed", new LightsArmed(m_cannon));
-    SmartDashboard.putData("LightsOff", new LightsOff(m_cannon));
+    SmartDashboard.putData("ArmCannon", new ArmCannon(this));
+    SmartDashboard.putData("DisarmCannon", new DisarmCannon(this));
+    SmartDashboard.putData("ShootCannon", new ShootCannon(this));
+    SmartDashboard.putData("DriveCommand", new DriveCommand(this));
+    SmartDashboard.putData("ToggleDriveScaling", new ToggleDriveScaling(this));
+    SmartDashboard.putData("IncrementDriveScaling", new IncrementDriveScaling(this));
+    SmartDashboard.putData("DecrementDriveScaling", new DecrementDriveScaling(this));
+    SmartDashboard.putData("RotateMagazine", new RotateMagazine(this));
+    SmartDashboard.putData("ControlCannon", new ControlCannon(this));
+    SmartDashboard.putData("ActivateLights", new ActivateLights(this, LEDColor.kWhite));
+    SmartDashboard.putData("LightsArmed", new LightsArmed(this, LEDColor.kRed));
+    SmartDashboard.putData("LightsOff", new LightsOff(this));
 
     // Configure the button bindings
     configureButtonBindings();
 
     // Configure default commands
-    m_cannon.setDefaultCommand(new ControlCannon(m_cannon));
-    m_driveTrain.setDefaultCommand(new DriveCommand(m_driveTrain));
+    m_cannon.setDefaultCommand(new ControlCannon(this));
+    m_driveTrain.setDefaultCommand(new DriveCommand(this));
 
     // Configure autonomous sendable chooser
     m_chooser.setDefaultOption("Autonomous Command", new AutonomousCommand());
@@ -94,17 +97,21 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    a_Button_Driver.whenPressed(new ArmCannon(m_cannon), true);
-    SmartDashboard.putData("Arm Cannon", new ArmCannon(m_cannon));
+    a_Button_Driver.whenPressed(new ArmCannon(this), true);
+    SmartDashboard.putData("Arm Cannon", new ArmCannon(this));
 
-    a_Button_Driver.whenReleased(new DisarmCannon(m_cannon), true);
-    SmartDashboard.putData("Disarm Cannon", new DisarmCannon(m_cannon));
+    a_Button_Driver.whenReleased(new DisarmCannon(this), true);
+    SmartDashboard.putData("Disarm Cannon", new DisarmCannon(this));
 
-    left_Bumper_Driver.whenPressed(new ShootCannon(m_cannon), true);
-    SmartDashboard.putData("Shoot Cannon", new ShootCannon(m_cannon));
+    start_Button_Driver.whenPressed(new ShootCannon(this), true);
+    SmartDashboard.putData("Shoot Cannon", new ShootCannon(this));
 
-    left_Stick_Driver.whenPressed(new ToggleDriveScaling(m_driveTrain), true);
-    SmartDashboard.putData("Toggle DriveScaling", new ToggleDriveScaling(m_driveTrain));
+    left_Stick_Driver.whenPressed(new ToggleDriveScaling(this), true);
+    SmartDashboard.putData("Toggle DriveScaling", new ToggleDriveScaling(this));
+    left_Bumper_Driver.whenPressed(new DecrementDriveScaling(this));
+    SmartDashboard.putData("DecrementDriveScaling", new ShootCannon(this));
+    right_Bumper_Driver.whenPressed(new IncrementDriveScaling(this));
+    SmartDashboard.putData("DecrementDriveScaling", new ShootCannon(this));
   }
 
   public XboxController getXboxController() {

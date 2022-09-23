@@ -23,6 +23,7 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.drive.DifferentialDrive;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.SubsystemBase;
+import frc.robot.Constants;
 
 /** */
 public class DriveTrain extends SubsystemBase {
@@ -52,7 +53,7 @@ public class DriveTrain extends SubsystemBase {
   private DriveMode m_DriveMode = DriveMode.ARCADE;
   private boolean m_UseSquares = true;
   private boolean m_UseDriveScaling = true;
-  private double m_DriveScaling = 0.4;
+  private double m_DriveScaling = 0.1;
   private boolean m_QuickTurn = false;
 
   private double _lastLSmoothing = 0.0;
@@ -66,10 +67,10 @@ public class DriveTrain extends SubsystemBase {
     // leftFollower = new WPI_TalonFX(2);
     // rightFollower = new WPI_TalonFX(4);
 
-    leftMaster = new CANSparkMax(1, MotorType.kBrushless);
-    rightMaster = new CANSparkMax(3, MotorType.kBrushless);
-    leftFollower = new CANSparkMax(2, MotorType.kBrushless);
-    rightFollower = new CANSparkMax(4, MotorType.kBrushless);
+    leftMaster = new CANSparkMax(Constants.kID_LMasterDrive, MotorType.kBrushless);
+    leftFollower = new CANSparkMax(Constants.kID_LFollowDrive, MotorType.kBrushless);
+    rightMaster = new CANSparkMax(Constants.kID_RMasterDrive, MotorType.kBrushless);
+    rightFollower = new CANSparkMax(Constants.kID_RFollowDrive, MotorType.kBrushless);
 
     differentialDrive = new DifferentialDrive(leftMaster, rightMaster);
     addChild("Differential Drive", differentialDrive);
@@ -84,15 +85,14 @@ public class DriveTrain extends SubsystemBase {
     leftFollower.follow(leftMaster);
     //    leftFollower.setInverted(InvertType.FollowMaster);
 
+    rightMaster.setInverted(true);
     // rightFollower.configFactoryDefault();
     rightFollower.restoreFactoryDefaults();
+    rightFollower.setInverted(true);
     rightFollower.follow(rightMaster);
     //    rightFollower.setInverted(InvertType.FollowMaster);
 
     differentialDrive.setDeadband(0.02);
-    setUseDriveScaling(m_UseDriveScaling);
-    setUseSquares(m_UseSquares);
-    setDriveMode(m_DriveMode);
   }
 
   @Override
@@ -212,6 +212,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void setUseDriveScaling(boolean use) {
+    System.out.println("setUseDriveScaling: " + (use ? "Yes" : "No"));
     m_UseDriveScaling = use;
     this.setMaxOutput(m_UseDriveScaling ? m_DriveScaling : 1.0);
     SmartDashboard.putBoolean("UseDriveScaling", m_UseDriveScaling);
@@ -222,6 +223,7 @@ public class DriveTrain extends SubsystemBase {
   }
 
   public void setDriveScaling(double scaling) {
+    System.out.println("setDriveScaling: " + scaling);
     m_DriveScaling = Math.max(Math.min(scaling, 1.0), 0.1);
     this.setMaxOutput(m_UseDriveScaling ? m_DriveScaling : 1.0);
     SmartDashboard.putNumber("DriveScaling", m_DriveScaling);

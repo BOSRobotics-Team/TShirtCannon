@@ -14,4 +14,10 @@ public class Constants {
    * static final int kLeftMotor2Port = 1; public static final int kRightMotor1Port = 2; public
    * static final int kRightMotor2Port = 3; }
    */
+  public static final int kID_LMasterDrive = 1; // SparkMAX
+
+  public static final int kID_LFollowDrive = 2; // SparkMAX
+  public static final int kID_RMasterDrive = 3; // SparkMAX
+  public static final int kID_RFollowDrive = 4; // SparkMAX
+  public static final int kID_CANdle = 0;
 }

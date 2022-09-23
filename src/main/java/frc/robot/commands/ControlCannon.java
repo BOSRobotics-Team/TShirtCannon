@@ -8,12 +8,13 @@ import frc.robot.subsystems.Cannon;
 public class ControlCannon extends CommandBase {
 
   private final Cannon m_cannon;
+  private final XboxController m_controller;
+  private boolean m_isFired = false;
 
-  public XboxController m_controller;
+  public ControlCannon(RobotContainer container) {
 
-  public ControlCannon(Cannon subsystem) {
-
-    m_cannon = subsystem;
+    m_cannon = container.m_cannon;
+    m_controller = container.getXboxController();
     addRequirements(m_cannon);
   }
 
@@ -21,7 +22,6 @@ public class ControlCannon extends CommandBase {
   @Override
   public void initialize() {
     System.out.println("ControlCannon-init");
-    m_controller = RobotContainer.getInstance().getXboxController();
   }
 
   // Called every time the scheduler runs while the command is scheduled.
@@ -44,8 +44,13 @@ public class ControlCannon extends CommandBase {
       m_cannon.raiseCannon(0);
     }
     if (m_controller.getLeftTriggerAxis() > 0.5) {
-      m_cannon.fire();
-      System.out.println("fireCannon");
+      if (!m_isFired) {
+        m_isFired = true;
+        m_cannon.fire();
+        System.out.println("fireCannon");
+      }
+    } else {
+      m_isFired = false;
     }
   }
 
