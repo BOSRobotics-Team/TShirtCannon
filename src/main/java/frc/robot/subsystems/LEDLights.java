@@ -254,8 +254,8 @@ public class LEDLights extends SubsystemBase {
                 color.white,
                 color.speed,
                 color.count,
-                BounceMode.Front,
-                3);
+                BounceMode.Back,
+                6);
         break;
       case Rainbow:
         m_toAnimate = new RainbowAnimation(color.brightness, color.speed, color.count);

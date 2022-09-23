@@ -5,10 +5,10 @@ import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj.smartdashboard.SendableChooser;
 import edu.wpi.first.wpilibj.smartdashboard.SmartDashboard;
 import edu.wpi.first.wpilibj2.command.Command;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import edu.wpi.first.wpilibj2.command.button.JoystickButton;
 import frc.robot.commands.*;
 import frc.robot.subsystems.*;
-import frc.robot.subsystems.LEDLights.LEDColor;
 
 /**
  * This class is where the bulk of the robot should be declared. Since Command-based is a
@@ -68,8 +68,8 @@ public class RobotContainer {
     SmartDashboard.putData("DecrementDriveScaling", new DecrementDriveScaling(this));
     SmartDashboard.putData("RotateMagazine", new RotateMagazine(this));
     SmartDashboard.putData("ControlCannon", new ControlCannon(this));
-    SmartDashboard.putData("ActivateLights", new ActivateLights(this, LEDColor.kWhite));
-    SmartDashboard.putData("LightsArmed", new LightsArmed(this, LEDColor.kRed));
+    SmartDashboard.putData("ActivateLights", new ActivateLights(this));
+    SmartDashboard.putData("LightsArmed", new LightsArmed(this));
     SmartDashboard.putData("LightsOff", new LightsOff(this));
 
     // Configure the button bindings
@@ -97,13 +97,16 @@ public class RobotContainer {
    */
   private void configureButtonBindings() {
 
-    a_Button_Driver.whenPressed(new ArmCannon(this), true);
+    a_Button_Driver.whenPressed(
+        new SequentialCommandGroup(new ArmCannon(this), new LightsArmed(this)), true);
     SmartDashboard.putData("Arm Cannon", new ArmCannon(this));
 
-    a_Button_Driver.whenReleased(new DisarmCannon(this), true);
+    a_Button_Driver.whenReleased(
+        new SequentialCommandGroup(new DisarmCannon(this), new LightsOff(this)), true);
     SmartDashboard.putData("Disarm Cannon", new DisarmCannon(this));
 
-    start_Button_Driver.whenPressed(new ShootCannon(this), true);
+    start_Button_Driver.whenPressed(
+        new SequentialCommandGroup(new ShootCannon(this), new ActivateLights(this)), true);
     SmartDashboard.putData("Shoot Cannon", new ShootCannon(this));
 
     left_Stick_Driver.whenPressed(new ToggleDriveScaling(this), true);

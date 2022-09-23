@@ -2,17 +2,21 @@ package frc.robot.commands;
 
 import edu.wpi.first.wpilibj.XboxController;
 import edu.wpi.first.wpilibj2.command.CommandBase;
+import edu.wpi.first.wpilibj2.command.CommandScheduler;
+import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.Cannon;
 
 public class ControlCannon extends CommandBase {
 
+  private final RobotContainer m_container;
   private final Cannon m_cannon;
   private final XboxController m_controller;
   private boolean m_isFired = false;
 
   public ControlCannon(RobotContainer container) {
 
+    m_container = container;
     m_cannon = container.m_cannon;
     m_controller = container.getXboxController();
     addRequirements(m_cannon);
@@ -46,7 +50,10 @@ public class ControlCannon extends CommandBase {
     if (m_controller.getLeftTriggerAxis() > 0.5) {
       if (!m_isFired) {
         m_isFired = true;
-        m_cannon.fire();
+        CommandScheduler.getInstance()
+            .schedule(
+                new SequentialCommandGroup(
+                    new ShootCannon(m_container), new ActivateLights(m_container)));
         System.out.println("fireCannon");
       }
     } else {
