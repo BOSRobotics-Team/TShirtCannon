@@ -27,8 +27,8 @@ public class DriveCommand extends CommandBase {
     m_driveTrain.setDriveMode(DriveMode.ARCADE);
     m_driveTrain.setUseSquares(true);
     m_driveTrain.setUseDriveScaling(true);
-    m_driveTrain.setDriveScaling(0.2);
-    m_driveTrain.enableBrakes(true);
+    m_driveTrain.setDriveScaling(0.1);
+    m_driveTrain.enableBrakes(false);
     m_driveTrain.enableDriveTrain(true);
     // _lastTriggerL = _lastTriggerR = false;
   }
